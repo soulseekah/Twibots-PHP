@@ -1,0 +1,7 @@
+This is a PHP port of kovshenin's Twibots https://github.com/kovshenin/twibots automated twitter robot. Although I do love Python, I need a PHP version of this script, and I'm going to port it to PHP.
+
+Requirements:
+
+- PHP 5 CLI
+- cURL library
+- SSL support
