@@ -1,5 +1,5 @@
 <?php
-	/* This is a twibot */
+	/* This is a typical Twibot setup */
 
 	/* Load up the configuration and initialize */
 	require 'config.php'; require 'init.php';
@@ -14,6 +14,14 @@
 
 	$twitter->authenticate(); /* Who are you? What do you want? */
 
+	/* Add some filters */
+	$twitter->add_filter('trim140', new Trim140());
+
+	$twibot = new Twibot(); /* Spawn the bot */
+
+	$twibot->add_channel('twitter', $twitter);
+	$twibot->add_source('themefm', new RssFeed('http://feeds.feedburner.com/themefm?format=xml'));
+
 	/* Earthlings! Hear me and hear me well! */
-	$twibot = new Twitbot();
+	$twibot->live();
 ?>

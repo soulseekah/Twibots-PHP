@@ -24,6 +24,16 @@
 			}
 		}
 
+		/* The default action */
+		public function _default(Writable $writable) {
+			return $this->tweet($writable);
+		}
+
+		private function tweet(Writable $writable) {
+			echo 'Tweeting ('.strlen($writable->output).'): '.$writable->output."\n";
+			$this->api->post('statuses/update', array('status' => utf8_encode($writable->output)));
+		}
+
 		public function isAuthenticated() {
 			return $this->authenticated;
 		}
@@ -48,7 +58,7 @@
 
 		public function authenticate() {
 			if ($this->isAuthenticated()) {
-				echo 'Instance authenticated as @'.$this->screen_name.' (#'.$this->user_id.')';
+				echo 'Instance authenticated as @'.$this->screen_name.' (#'.$this->user_id.')'."\n";
 				return;
 			}
 
@@ -121,9 +131,25 @@
 			return $access_token;
 		}
 
+		public function post($url, $data) {
+			$url = self::API_URL.$url.'.json';
+
+			$request = OAuthRequest::from_consumer_and_token($this->consumer, $this->access_token, 'POST', $url, $data);
+			$request->sign_request($this->signature_method, $this->consumer, $this->access_token);
+
+			$response = OAuthUtil::parse_parameters($this->_request($request->get_normalized_http_url(), 'POST', $request->to_postdata()));
+
+			return json_decode($response);
+		}
+
 		public function _request($url, $method, $data = null) {
 			$handle = curl_init($url);
 			curl_setopt($handle, CURLOPT_RETURNTRANSFER, TRUE);
+
+			if ($method == 'POST') {
+				curl_setopt($handle, CURLOPT_POST, TRUE);
+				if (!empty($data)) curl_setopt($handle, CURLOPT_POSTFIELDS, $data);
+			}
 
 			return curl_exec($handle);
 		}

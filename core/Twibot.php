@@ -3,29 +3,53 @@
 	class Twibot {
 		private $sources;
 		private $channels;
-		private $filters;
 
 		public function __construct($name = '') {
 			$this->name = $name;
 		}
 
-		/* Getters and setters */
-		public function add_source(Source $source) {
+		public function live() {
+			/* A bit loop */
+			while (true) {
+				foreach ($this->sources as $source) {
+					$writable = $source->read();
+					foreach ($this->channels as $channel) {
+						$channel->write($writable);
+					}
+				}
+			}
 		}
 
-		public function add_channel(Channel $channel) {
+		/* Getters, setters and removers */
+		final public function add_source($id, Source $source) {
+			$this->sources[$id] = $source;
 		}
 
-		public function add_filter(Filter $filter) {
+		final public function add_channel($id, Channel $channel) {
+			$this->channels[$id] = $channel;
 		}
 
-		public function remove_source($id) {
+		final public function remove_source($id) {
+			if (isset($this->sources[$id])) unset($this->sources[$id]);
 		}
 
-		public function remove_channel($id) {
+		final public function remove_channel($id) {
+			if (isset($this->channels[$id])) unset($this->channels[$id]);
 		}
+	}
 
-		public function remove_filter($id) {
+	/* A Writable object - an object that can be written */
+	class Writable {
+		public function __construct($args) {
+			$this->title = isset($args['title'])? $args['title'] : '';
+			$this->excerpt = isset($args['excerpt'])? $args['excerpt'] : '';
+			$this->content = isset($args['content'])? $args['content'] : '';
+			$this->permalink = isset($args['permalink'])? $args['permalink'] : '';
+			$this->author = isset($args['author'])? $args['author'] : '';
+			$this->tags = isset($args['tags'])? $args['tags'] : array();
+
+			$this->actions = isset($args['actions'])? $args['actions'] : array();
+			$this->timestamp = time();
 		}
 	}
 ?>
