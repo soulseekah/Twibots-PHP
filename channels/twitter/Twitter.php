@@ -31,7 +31,8 @@
 
 		private function tweet(Writable $writable) {
 			echo 'Tweeting ('.strlen($writable->output).'): '.$writable->output."\n";
-			$this->api->post('statuses/update', array('status' => utf8_encode($writable->output)));
+			// $this->api->post('statuses/update', array('status' => utf8_encode($writable->output)));
+			sleep(10);
 		}
 
 		public function isAuthenticated() {

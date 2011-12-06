@@ -10,7 +10,7 @@
 			while(strlen($this->construct($writable->title, $writable->permalink, $writable->tags)) >= $this->max_length) {
 				/* Remove tags one at a time */
 				if (sizeof($writable->tags)) {
-					unset($writable->tags[sizeof($writable->tags - 1)]);
+					unset($writable->tags[sizeof($writable->tags) - 1]);
 					continue;
 				}
 
